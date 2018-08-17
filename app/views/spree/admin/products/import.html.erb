@@ -1,0 +1,14 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:import_products) %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <%= render "spree/admin/shared/import_products_button" %>
+  <%= button_link_to Spree.t(:new_product), new_object_url, { class: "btn-success", icon: 'add', id: 'admin_new_product' } %>
+<% end if can?(:create, Spree::Product) %>
+
+<div class="form-actions">
+  <%= button Spree.t(:import), 'ok', 'submit', {class: 'btn-success', data: { disable_with: "#{ Spree.t(:importing) }..." }} %>
+  <span class="or"><%= Spree.t(:or) %></span>
+  <%= button_link_to Spree.t('actions.cancel'), collection_url, icon: 'remove' %>
+</div>
