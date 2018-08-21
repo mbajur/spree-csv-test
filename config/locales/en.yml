@@ -33,4 +33,18 @@ en:
   spree:
     import: Import
     importing: Importing
-    import_products: Import products
+    import_products_results: Import results
+    errors_label: Errors
+
+    admin:
+      products:
+        import_results:
+          new_products: New products
+          new_products_desc: Products successfully added to the database
+          already_present: Already present
+          already_present_desc: Products that were already in the database (identified by <code>slug</code>)
+          invalid_products: Invalid products
+          invalid_products_desc: Products that were not imported because of validation errors
+          rows_malformed: Rows malformed
+          rows_malformed_desc: CSV rows skipped because of malformation
+

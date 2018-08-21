@@ -1,14 +1,51 @@
 <% content_for :page_title do %>
-  <%= Spree.t(:import_products) %>
+  <%= link_to Spree.t(:products), spree.admin_products_url %> / <%= Spree.t(:import) %>
 <% end %>
 
 <% content_for :page_actions do %>
-  <%= render "spree/admin/shared/import_products_button" %>
   <%= button_link_to Spree.t(:new_product), new_object_url, { class: "btn-success", icon: 'add', id: 'admin_new_product' } %>
 <% end if can?(:create, Spree::Product) %>
 
-<div class="form-actions">
-  <%= button Spree.t(:import), 'ok', 'submit', {class: 'btn-success', data: { disable_with: "#{ Spree.t(:importing) }..." }} %>
-  <span class="or"><%= Spree.t(:or) %></span>
-  <%= button_link_to Spree.t('actions.cancel'), collection_url, icon: 'remove' %>
+<div class="row">
+  <div class="col-sm-6">
+    <%= form_for @products_import_form, url: admin_products_import_path, as: :products_import do |f| %>
+      <p>Import CSV file to bulk create products</p>
+
+      <%= f.field_container :file, class: ['form-group'] do %>
+        <%= f.label :file %> <span class="required">*</span>
+        <%= f.file_field :file, class: 'form-control' %>
+        <%= error_message_on f.object, :file %>
+      <% end %>
+
+      <%= f.field_container :taxonomy_id, class: ['form-group'] do %>
+        <%= f.label :taxonomy_id %> <span class="required">*</span>
+        <%= f.collection_select(:taxonomy_id, Spree::Taxonomy.all, :id, :name, { include_blank: Spree.t('match_choices.none') }, { class: 'select2', required: :required }) %>
+        <%= error_message_on f.object, :taxonomy_id %>
+      <% end %>
+
+      <%= f.field_container :shipping_category_id, class: ['form-group'] do %>
+        <%= f.label :shipping_category_id %> <span class="required">*</span>
+        <%= f.collection_select(:shipping_category_id, @shipping_categories, :id, :name, { include_blank: Spree.t('match_choices.none') }, { class: 'select2', required: :required }) %>
+        <%= error_message_on f.object, :shipping_category_id %>
+      <% end %>
+
+      <div class="form-actions">
+        <%= button Spree.t(:import), 'ok', 'submit', { class: 'btn-success', data: { disable_with: "#{ Spree.t(:importing) }..." } } %>
+        <span class="or"><%= Spree.t(:or) %></span>
+        <%= button_link_to Spree.t('actions.cancel'), collection_url, icon: 'remove' %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @products.present? %>
+    <div class="col-sm-6">
+      <table class="table">
+        <% @products.each do |product| %>
+          <tr>
+            <td><%= product.name %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
 </div>
