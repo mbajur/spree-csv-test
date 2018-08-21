@@ -1,0 +1,72 @@
+<% content_for :page_title do %>
+  <%= link_to Spree.t(:products), spree.admin_products_url %> / <%= Spree.t(:import_results) %>
+<% end %>
+
+<div class="well">
+  <div class="row counters">
+    <div class="col-sm-3">
+      <h6 class="counters-heading"><%= Spree.t('admin.products.import_results.new_products') %></h6>
+      <p class="counters-content"><%= @created_products.count %></p>
+    </div>
+
+    <div class="col-sm-3">
+      <h6 class="counters-heading"><%= Spree.t('admin.products.import_results.already_present') %></h6>
+      <p class="counters-content"><%= @existing_products.count %></p>
+    </div>
+
+    <div class="col-sm-3">
+      <h6 class="counters-heading"><%= Spree.t('admin.products.import_results.invalid_products') %></h6>
+      <p class="counters-content"><%= @invalid_products.count %></p>
+    </div>
+
+    <div class="col-sm-3">
+      <h6 class="counters-heading"><%= Spree.t('admin.products.import_results.rows_malformed') %></h6>
+      <p class="counters-content"><%= @invalid_rows.count %></p>
+    </div>
+  </div>
+</div>
+
+<% if @created_products.any? %>
+  <h2><%= Spree.t('admin.products.import_results.new_products') %></h2>
+  <p class="text-muted"><%= Spree.t('admin.products.import_results.new_products_desc') %></p>
+  <%= render 'products', products: @created_products %>
+  <hr>
+<% end %>
+
+<% if @existing_products.any? %>
+  <h2><%= Spree.t('admin.products.import_results.already_present') %></h2>
+  <p class="text-muted"><%== Spree.t('admin.products.import_results.already_present_desc') %></p>
+  <%= render 'products', products: @existing_products %>
+  <hr>
+<% end %>
+
+<% if @invalid_products.any? %>
+  <h2><%= Spree.t('admin.products.import_results.invalid_products') %></h2>
+  <p class="text-muted"><%= Spree.t('admin.products.import_results.invalid_products_desc') %></p>
+  <%= render 'products', products: @invalid_products, show_errors: true %>
+  <hr>
+<% end %>
+
+<% if @invalid_rows.any? %>
+  <h2><%= Spree.t('admin.products.import_results.rows_malformed') %></h2>
+  <p class="text-muted"><%= Spree.t('admin.products.import_results.rows_malformed_desc') %></p>
+  <table class="table table-striped">
+    <thead>
+      <th><%= Spree.t(:row) %></th>
+      <th><%= Spree.t(:errors_label) %></th>
+    </thead>
+
+    <% @invalid_rows.each do |row| %>
+      <tr>
+        <td><pre><%= row.to_csv %></pre></td>
+        <td>
+          <ul>
+            <% row.errors.each do |error| %>
+              <li><%= error %></li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

@@ -1,0 +1,45 @@
+<% show_errors = defined?(show_errors) && show_errors ? true : false %>
+
+<table class="table table-striped">
+  <thead>
+    <th><%= Spree.t(:name) %></th>
+    <th><%= Spree.t(:slug) %></th>
+    <th><%= Spree.t(:price) %></th>
+    <th><%= Spree.t(:available_on) %></th>
+    <th><%= Spree.t(:categories) %></th>
+
+    <% if show_errors %>
+      <th><%= Spree.t(:errors_label) %></th>
+    <% end %>
+  </thead>
+
+  <% products.each do |product| %>
+    <tr>
+      <td>
+        <% if product.persisted? %>
+          <%= link_to product.name, admin_product_path(product) %>
+        <% else %>
+          <%= product.name %>
+        <% end %>
+      </td>
+
+      <td><%= product.slug %></td>
+      <td><%= product.display_price.to_html rescue '' %></td>
+      <td>
+        <%= product.available_on %>
+        <span class="label label-default"><%= available_status product%></span>
+      </td>
+      <td><%= product.taxons.map(&:name).join(', ') %></td>
+
+      <% if show_errors %>
+        <td>
+          <ul>
+            <% product.errors.full_messages.each do |error| %>
+              <li><%= error %></li>
+            <% end %>
+          </ul>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
