@@ -33,7 +33,7 @@ en:
   spree:
     import: Import
     importing: Importing
-    import_products_results: Import results
+    import_results: Import results
     errors_label: Errors
 
     admin:

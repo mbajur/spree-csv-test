@@ -2,6 +2,10 @@
   <%= link_to Spree.t(:products), spree.admin_products_url %> / <%= Spree.t(:import_results) %>
 <% end %>
 
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:back), admin_products_url, { class: "btn-default", icon: 'chevron-left' } %>
+<% end if can?(:create, Spree::Product) %>
+
 <div class="well">
   <div class="row counters">
     <div class="col-sm-3">
