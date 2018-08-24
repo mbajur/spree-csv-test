@@ -8,6 +8,8 @@ class Products::ImportForm
   validates :shipping_category_id, presence: true
 
   def save
+    return false unless valid?
+
     result = ProductsCsvImporter::Import.new(
       file: file,
       taxonomy: taxonomy_id,

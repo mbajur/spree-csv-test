@@ -1,7 +1,8 @@
 require 'dry-initializer-rails'
 
 class ProductsCsvImporter::Import < ProductsCsvImporter::Base
-  attr_accessor :created_products, :existing_products, :invalid_products, :invalid_rows
+  attr_accessor :created_products, :existing_products, :invalid_products,
+                :invalid_rows
 
   CSV_OPTIONS = { headers: true, col_sep: ';' }.freeze
 

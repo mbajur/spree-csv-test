@@ -1,13 +1,17 @@
 class ProductsCsvImporter::RowHandler < ProductsCsvImporter::Base
-  param :row, (proc { |v| v.to_h.symbolize_keys })
+  param :row, proc { |v| v.to_h.symbolize_keys }
   option :taxons
-  option :shipping_category
+  option :shipping_category, model: Spree::ShippingCategory
 
   def call
-    product_handler = ProductsCsvImporter::ProductHandler.new(product_attributes)
+    product_handler = ProductsCsvImporter::ProductHandler.new(
+      row: serialized_row,
+      shipping_category: shipping_category,
+      taxons: matched_taxons
+    )
 
-    unless product_handler.params_valid?
-      res = FailedRowResult.new(row, product_handler.params_full_errors)
+    unless serialized_row.valid?
+      res = FailedRowResult.new(row, serialized_row.full_errors)
       return result(:row_invalid, res)
     end
 
@@ -17,32 +21,13 @@ class ProductsCsvImporter::RowHandler < ProductsCsvImporter::Base
 
   private
 
-  def product_attributes
-    row.merge(
-      shipping_category_id: shipping_category.id,
-      taxons: parsed_product_taxons,
-      availability_date: parsed_availability_date,
-      price: parsed_price
-    )
+  def serialized_row
+    @serialized_row ||= ProductsCsvImporter::Row.new(row.compact)
   end
 
-  def parsed_product_taxons
-    return [] unless row[:category]
-    taxons.select { |t| t.name == row[:category] }
-  end
-
-  # @todo: there should be probably datetime validation involved in here instead
-  # of rescuing ArgumentError
-  def parsed_availability_date
-    return nil unless row[:availability_date]
-    Time.parse(row[:availability_date])
-  rescue ArgumentError
-    nil
-  end
-
-  def parsed_price
-    return nil unless row[:price]
-    row[:price].gsub(',', '.')
+  def matched_taxons
+    return [] unless serialized_row.category.presence
+    taxons.select { |t| t.name == serialized_row.category }
   end
 
   def resolve_exists_result(payload)

@@ -129,6 +129,11 @@ GEM
       dry-types (~> 0.13.1)
     erubi (1.7.1)
     execjs (2.7.0)
+    factory_girl (4.9.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.9.0)
+      factory_girl (~> 4.9.0)
+      railties (>= 3.0.0)
     ffaker (2.10.0)
     ffi (1.9.18)
     friendly_id (5.2.4)
@@ -394,6 +399,8 @@ DEPENDENCIES
   dry-initializer
   dry-initializer-rails
   dry-validation
+  factory_girl_rails
+  ffaker
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   pg (~> 0.18)
